@@ -6,7 +6,8 @@ namespace EmployeePayroll
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            PayrollServiceRepo payrollService = new PayrollServiceRepo();
+            Console.WriteLine(payrollService.CheckConnection());
         }
     }
 }

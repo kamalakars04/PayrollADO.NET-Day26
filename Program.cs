@@ -12,6 +12,9 @@ namespace EmployeePayroll
 
             //UC2 get all payroll details
             payrollService.GetPayrollDetails(1);
+
+            //UC 3 update salary of employee
+            payrollService.UpdateSalaryOfEmployee(1, 7, 50000, 1000);
         }
     }
 }

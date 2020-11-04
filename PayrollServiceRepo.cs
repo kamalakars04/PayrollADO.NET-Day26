@@ -25,19 +25,41 @@ namespace EmployeePayroll
         public bool CheckConnection()
         {
             logger.Debug("User tried to check connection");
-            //try
-            //{
+            try
+            {
                 // If no error return true else false
                 connection.Open();
                 connection.Close();
                 logger.Info("connection established");
                 return true;
-            //}
-            //catch
-            //{
-            //    logger.Info("connection not established");
-            //    return false;
-            //}
+            }
+            catch
+            {
+                logger.Info("connection not established");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// UC 2 Gets the payroll details.
+        /// </summary>
+        public void GetPayrollDetails(int empid = 0)
+        {
+            SqlCommand command = new SqlCommand();
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            command.CommandText = "dbo.GetPayRollDetails";
+            if (empid != 0)
+                command.Parameters.AddWithValue("@empId",1);
+            command.Connection = connection;
+            connection.Open();
+            SqlDataReader reader = command.ExecuteReader();
+            Console.WriteLine("Empid    payrollid   basepay     deductions      taxable     tax     netpay");
+            while (reader.HasRows)
+            {
+                while(reader.Read())
+                Console.WriteLine(reader[0]+"           " +reader[1] + "       " + reader[2] + "               " + 
+                                  reader[3] + "         " + reader[4] + "           " + reader[5] + "            " + reader[6]);
+            }
         }
     }
 }

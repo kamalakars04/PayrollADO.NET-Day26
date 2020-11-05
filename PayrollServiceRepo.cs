@@ -251,5 +251,49 @@ namespace EmployeePayroll
                     connection.Close();
             }
         }
+
+        /// <summary>
+        /// UC 7 Adds the employee.
+        /// </summary>
+        /// <param name="emp">The emp.</param>
+        /// <param name="address">The address.</param>
+        /// <param name="deptid">The deptid.</param>
+        public void AddEmployee(EmployeeDetails emp, EmpAddress address, int deptid = 0)
+        {
+            // open connection and create transaction
+            connection.Open();
+            try
+            {
+                // create a new command in transaction
+                SqlCommand command = new SqlCommand();
+                command.Connection = connection;
+
+                // Execute command
+                command.CommandType = System.Data.CommandType.StoredProcedure;
+                command.CommandText = "dbo.addEmployee";
+                command.Parameters.AddWithValue("@EmpName", emp.empName);
+                command.Parameters.AddWithValue("@gender", emp.gender);
+                command.Parameters.AddWithValue("@PhoneNumber", emp.phoneNumber);
+                command.Parameters.AddWithValue("@PayrollId", emp.payrollId);
+                command.Parameters.AddWithValue("@start_date", emp.startDate);
+                command.Parameters.AddWithValue("@street", address.street);
+                command.Parameters.AddWithValue("@city", address.city);
+                command.Parameters.AddWithValue("@state", address.state);
+                if (deptid != 0)
+                    command.Parameters.AddWithValue("@deptid", deptid);
+
+                command.ExecuteNonQuery();
+            }
+            catch
+            {
+                if (CheckConnection())
+                    connection.Close();
+            }
+            finally
+            {
+                if (CheckConnection())
+                    connection.Close();
+            }
+        }
     }
 }

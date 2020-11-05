@@ -23,7 +23,9 @@ namespace EmployeePayroll
             payrollService.UpdateSalaryOfEmployee(1, 7, 50000, 1000);
 
             // UC 5 Retrieve with start date
-            payrollService.RetrieveWithStartDate(new DateTime(2014,01,01), new DateTime(2019,01,01));
+            payrollService.RetrieveWithStartDate(new DateTime(2014, 01, 01), new DateTime(2019, 01, 01));
+
+            payrollService.PerformSumAvgMinMax();
         }
     }
 }

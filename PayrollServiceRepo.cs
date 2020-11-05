@@ -203,5 +203,53 @@ namespace EmployeePayroll
                     connection.Close();
             }
         }
+
+        /// <summary>
+        /// UC 6 Performs the sum average minimum maximum.
+        /// </summary>
+        public void PerformSumAvgMinMax()
+        {
+            try
+            {
+                // Open connection
+                connection.Open();
+
+                // Perform Command
+                SqlCommand command = new SqlCommand();
+                command.Connection = connection;
+
+                // Find Sum,Avg,Max,Min by male and female
+                command.CommandText = "Select gender,Sum(basepay),Avg(basepay),max(basepay),min(basepay) from (select PD.basepay,ED.gender from payrolldetails PD " +
+                                       "inner join employeedetails ED" +
+                                      " on ED.payrollid = PD.payrollid) as temp group by gender";
+                SqlDataReader reader = command.ExecuteReader();
+
+                // Read the output
+                while(reader.HasRows)
+                {
+                    if (reader.Read())
+                    {
+                        Console.WriteLine("sum of salary of Gender {0} is {1}", reader[0], reader[1]);
+                        Console.WriteLine("average of salary of Gender {0} is {1}", reader[0], reader[2]);
+                        Console.WriteLine("maximum of salary of Gender {0} is {1}", reader[0], reader[3]);
+                        Console.WriteLine("mimimum of salary of Gender {0} is {1}", reader[0], reader[4]);
+                    }
+
+                    else
+                        break;
+                }
+                reader.Close();
+            }
+            catch
+            {
+                if (CheckConnection())
+                    connection.Close();
+            }
+            finally
+            {
+                if (CheckConnection())
+                    connection.Close();
+            }
+        }
     }
 }

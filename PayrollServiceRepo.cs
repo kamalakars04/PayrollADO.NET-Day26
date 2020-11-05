@@ -1,4 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
+﻿// // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="fileName.cs" company="Bridgelabz">
 //   Copyright © 2018 Company
 // </copyright>
@@ -7,6 +7,7 @@
 namespace EmployeePayroll
 {
     using System;
+    using System.Collections.Generic;
     using System.Data.SqlClient;
     using NLog;
 
@@ -42,8 +43,9 @@ namespace EmployeePayroll
 
         /// <summary>
         /// UC 2 Gets the payroll details.
+        /// UC 4 Refactor to have singleton class
         /// </summary>
-        public void GetPayrollDetails(int empid = 0)
+        public PayrollDetails GetPayrollDetails(int empid = 0)
         {
             try
             {
@@ -52,27 +54,42 @@ namespace EmployeePayroll
                 command.CommandType = System.Data.CommandType.StoredProcedure;
                 command.CommandText = "dbo.GetPayRollDetails";
                 if (empid != 0)
-                    command.Parameters.AddWithValue("@empId", 1);
+                    command.Parameters.AddWithValue("@empId", empid);
                 command.Connection = connection;
                 connection.Open() ;
 
                 //Read the output of command execution
                 SqlDataReader reader = command.ExecuteReader();
+
+                // Use of singleton class
+                PayrollDetails payrollDetails = PayrollDetails.GetInstance();
                 Console.WriteLine("Empid    payrollid   basepay     deductions      taxable     tax     netpay");
                 while (reader.HasRows)
                 {
                     if (reader.Read())
-                        Console.WriteLine(reader[0] + "           " + reader[1] + "       " + reader[2] + "               " +
-                                          reader[3] + "         " + reader[4] + "           " + reader[5] + "            " + reader[6]);
+                    {
+                        payrollDetails.EmpId = Convert.ToInt32(reader[0]);
+                        payrollDetails.Payrollid = Convert.ToInt32(reader[1]);
+                        payrollDetails.BasePay = Convert.ToInt32(reader[2]);
+                        payrollDetails.Deductions = Convert.ToInt32(reader[3]);
+                        payrollDetails.TaxablePay = Convert.ToInt32(reader[4]);
+                        payrollDetails.IncomeTax = Convert.ToInt32(reader[5]);
+                        payrollDetails.NetPay = Convert.ToInt32(reader[6]);
+                        Console.WriteLine(payrollDetails.EmpId + "           " + payrollDetails.Payrollid + "       " + payrollDetails.Payrollid + "               " +
+                         payrollDetails.Deductions + "         " + payrollDetails.TaxablePay + "           " + payrollDetails.IncomeTax
+                         + "            " + payrollDetails.NetPay);
+                    }
                     else
                         break;
                 }
                 logger.Info("User accesed payroll records");
                 connection.Close();
+                return payrollDetails;
             }
             catch
             {
-                return;
+                connection.Close();
+                return null;
             }
         }
 

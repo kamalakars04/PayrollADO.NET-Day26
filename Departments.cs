@@ -7,20 +7,21 @@
 namespace EmployeePayroll
 {
     using System;
+    using System.Collections.Generic;
+    using System.Text;
 
-    class Program
+    class Departments
     {
-        static void Main(string[] args)
+        public int deptid { get; set; }
+        public string deptName { get; set; }
+
+        private static Departments instance = null;
+
+        static Departments GetInstance()
         {
-            //UC 1 check connection
-            PayrollServiceRepo payrollService = new PayrollServiceRepo();
-            Console.WriteLine(payrollService.CheckConnection());
-
-            //UC2 get all payroll details
-            payrollService.GetPayrollDetails(1);
-
-            //UC 3 update salary of employee
-            payrollService.UpdateSalaryOfEmployee(1, 7, 50000, 1000);
+            if (instance == null)
+                instance = new Departments();
+            return instance;
         }
     }
 }

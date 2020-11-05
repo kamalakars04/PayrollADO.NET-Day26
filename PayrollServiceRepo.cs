@@ -145,5 +145,63 @@ namespace EmployeePayroll
                 connection.Close();
             }
         }
+
+        /// <summary>
+        /// UC 5 Retrieves the with start date.
+        /// </summary>
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
+        /// <returns></returns>
+        public List<EmployeeDetails> RetrieveWithStartDate(DateTime x, DateTime y)
+        {
+            try
+            {
+                // Open connection
+                connection.Open();
+
+                // Create a new command
+                SqlCommand command = new SqlCommand();
+                command.Connection = connection;
+
+                // Give the query
+                command.CommandText = "select * from employeedetails where start_date between '"+ x + "' and '" + y+"'";
+                SqlDataReader reader = command.ExecuteReader();
+                EmployeeDetails employeeDetails = EmployeeDetails.GetInstance();
+                List<EmployeeDetails> detailList = new List<EmployeeDetails>();
+                while(reader.HasRows)
+                {
+                    // Read the output
+                    if (reader.Read())
+                    {
+                        employeeDetails.empId = Convert.ToInt32(reader[0]);
+                        employeeDetails.empName = Convert.ToString(reader[1]);
+                        employeeDetails.gender = Convert.ToChar(reader[2]);
+                        employeeDetails.phoneNumber = Convert.ToString(reader[3]);
+                        employeeDetails.payrollId = Convert.ToInt32(reader[4]);
+                        employeeDetails.startDate = Convert.ToDateTime(reader[5]);
+                        Console.WriteLine(employeeDetails.empId + "       " + employeeDetails.empName + "        " +
+                                           employeeDetails.gender + "         " + employeeDetails.phoneNumber + "         " +
+                                           employeeDetails.payrollId + "          " + employeeDetails.startDate);
+                        detailList.Add(employeeDetails);
+                    }
+                    else
+                        break;
+                }
+                return detailList;
+        }
+            catch
+            {
+                // Close the connection
+                if (CheckConnection())
+                    connection.Close();
+                return null;
+            }
+            finally
+            {
+                // Close the connection
+                if (CheckConnection())
+                    connection.Close();
+            }
+        }
     }
 }

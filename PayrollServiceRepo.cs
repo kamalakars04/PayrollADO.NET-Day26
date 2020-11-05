@@ -100,10 +100,11 @@ namespace EmployeePayroll
         /// <param name="payrollid">The payrollid.</param>
         /// <param name="basepay">The basepay.</param>
         /// <param name="deduction">The deduction.</param>
-        public void UpdateSalaryOfEmployee(int empid,int payrollid,int basepay,int deduction)
+        public bool UpdateSalaryOfEmployee(int empid,int payrollid,int basepay,int deduction)
         {
             // open connection and create transaction
             connection.Open();
+            int result = 0;
             SqlTransaction transaction = connection.BeginTransaction();
             try
             {
@@ -130,14 +131,16 @@ namespace EmployeePayroll
                 command.Parameters.Clear();
                 command.Parameters.AddWithValue("@empid", empid);
                 command.Parameters.AddWithValue("@payrollid", returnvalue.Value);
-                command.ExecuteNonQuery();
+                result = command.ExecuteNonQuery();
                 transaction.Commit();
                 connection.Close();
+                return true;
             }
             catch
             {
                 if (CheckConnection())
                     transaction.Rollback();
+                return false;
             }
             finally
             {

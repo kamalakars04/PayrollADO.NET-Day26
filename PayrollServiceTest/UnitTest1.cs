@@ -11,9 +11,11 @@ namespace PayrollServiceTest
 
     public class Tests
     {
+        PayrollServiceRepo payrollService;
         [SetUp]
         public void Setup()
         {
+            payrollService = new PayrollServiceRepo();
         }
 
         /// <summary>
@@ -22,10 +24,19 @@ namespace PayrollServiceTest
         [Test]
         public void CheckConnection()
         {
-            PayrollServiceRepo payrollService = new PayrollServiceRepo();
             bool actual = payrollService.CheckConnection();
             bool expected = true;
             Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        /// TC 2 UC 8 Gets the payroll details.
+        /// </summary>
+        [Test]
+        public void GetPayrollDetails()
+        {
+            PayrollDetails actual = payrollService.GetPayrollDetails(1);
+            Assert.AreEqual(50000, actual.BasePay);
         }
     }
 }

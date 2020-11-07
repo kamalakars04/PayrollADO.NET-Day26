@@ -43,6 +43,10 @@ namespace EmployeePayroll
             address.city = "pune";
             address.state = "Maharastra";
             payrollService.AddEmployee(employee, address);
+
+            // UC 12 Delete emp
+            payrollService.DeleteEmployee(6);
+            payrollService.GetPayrollDetails();
         }
     }
 }

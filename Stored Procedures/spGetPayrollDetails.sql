@@ -13,9 +13,9 @@ CREATE PROCEDURE [dbo].[GetPayRollDetails]
 AS
 begin
 if(@empid is null)
-select ED.empid,PD.* from EmployeeDetails ED inner join PayrollDetails PD on PD.payrollId = ED.PayrollId
+select ED.empid,PD.* from EmployeeDetails ED inner join PayrollDetails PD on PD.payrollId = ED.PayrollId where ED._active = 1
 else
-select ED.empid,PD.* from EmployeeDetails ED inner join PayrollDetails PD on PD.payrollId = ED.PayrollId where ED.EmpID = @empId
+select ED.empid,PD.* from EmployeeDetails ED inner join PayrollDetails PD on PD.payrollId = ED.PayrollId where ED.EmpID = @empId and ED._active =1
 end
 GO
 

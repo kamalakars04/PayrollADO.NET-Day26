@@ -88,7 +88,8 @@ namespace EmployeePayroll
             }
             catch
             {
-                connection.Close();
+                if (connection.State == System.Data.ConnectionState.Open)
+                    connection.Close();
                 return null;
             }
         }
@@ -138,14 +139,14 @@ namespace EmployeePayroll
             }
             catch
             {
-                if (CheckConnection())
+                if (connection.State == System.Data.ConnectionState.Open)
                     transaction.Rollback();
                 return false;
             }
             finally
             {
-                if (CheckConnection())
-                connection.Close();
+                if (connection.State == System.Data.ConnectionState.Open)
+                    connection.Close();
             }
         }
 
@@ -195,14 +196,14 @@ namespace EmployeePayroll
             catch
             {
                 // Close the connection
-                if (CheckConnection())
+                if (connection.State == System.Data.ConnectionState.Open)
                     connection.Close();
                 return null;
             }
             finally
             {
                 // Close the connection
-                if (CheckConnection())
+                if (connection.State == System.Data.ConnectionState.Open)
                     connection.Close();
             }
         }
@@ -245,23 +246,24 @@ namespace EmployeePayroll
             }
             catch
             {
-                if (CheckConnection())
+                if (connection.State == System.Data.ConnectionState.Open)
                     connection.Close();
             }
             finally
             {
-                if (CheckConnection())
+                if (connection.State == System.Data.ConnectionState.Open)
                     connection.Close();
             }
         }
 
         /// <summary>
         /// UC 7 Adds the employee.
+        /// UC 11 Add the employee
         /// </summary>
         /// <param name="emp">The emp.</param>
         /// <param name="address">The address.</param>
         /// <param name="deptid">The deptid.</param>
-        public void AddEmployee(EmployeeDetails emp, EmpAddress address, int deptid = 0)
+        public bool AddEmployee(EmployeeDetails emp, EmpAddress address, int deptid = 0)
         {
             // open connection and create transaction
             connection.Open();
@@ -285,16 +287,20 @@ namespace EmployeePayroll
                 if (deptid != 0)
                     command.Parameters.AddWithValue("@deptid", deptid);
 
-                command.ExecuteNonQuery();
+                var result = command.ExecuteNonQuery();
+                if (result != 1)
+                    return false;
+                return true;
             }
             catch
             {
-                if (CheckConnection())
+                if (connection.State == System.Data.ConnectionState.Open)
                     connection.Close();
+                return false;
             }
             finally
             {
-                if (CheckConnection())
+                if (connection.State == System.Data.ConnectionState.Open)
                     connection.Close();
             }
         }

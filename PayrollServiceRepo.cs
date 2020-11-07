@@ -304,5 +304,43 @@ namespace EmployeePayroll
                     connection.Close();
             }
         }
+
+        /// <summary>
+        /// UC 12 set _active and delete employee
+        /// </summary>
+        /// <param name="empid"></param>
+        /// <returns></returns>
+        public bool DeleteEmployee(int empid)
+        {
+            // open connection and create transaction
+            connection.Open();
+            try
+            {
+                // create a new command in transaction
+                SqlCommand command = new SqlCommand();
+                command.Connection = connection;
+
+                // Execute command
+                command.CommandType = System.Data.CommandType.StoredProcedure;
+                command.CommandText = "dbo.spEmployeeDelete";
+                command.Parameters.AddWithValue("@Empid", empid);
+
+                var result = command.ExecuteNonQuery();
+                if (result != 1)
+                    return false;
+                return true;
+            }
+            catch
+            {
+                if (connection.State == System.Data.ConnectionState.Open)
+                    connection.Close();
+                return false;
+            }
+            finally
+            {
+                if (connection.State == System.Data.ConnectionState.Open)
+                    connection.Close();
+            }
+        }
     }
 }

@@ -32,6 +32,7 @@ begin transaction
 	if(@deptid is not null)
 		insert into dept_emp values (@empid,@deptid);
 commit transaction;
+return -1;
 end try
 begin catch
 rollback transaction;
